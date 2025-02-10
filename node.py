@@ -17,3 +17,9 @@ class Node:
 
         for connection in self.connections:
             connection.to_node.input_value += self.output_value * connection.weight
+
+    def clone(self):
+        clone = Node(self.id)
+        clone.id = self.id
+        clone.layer = self.layer
+        return clone
