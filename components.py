@@ -1,15 +1,22 @@
 import pygame
 import random
 import constants
-class Ground:
+class Ground(pygame.sprite.Sprite):
     ground_level = 500
 
-    def __init__(self, win_width):
-        self.x, self.y = 0, Ground.ground_level
-        self.rect = pygame.Rect(self.x, self.y, win_width, 5)
+    def __init__(self, x=0, y=500):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load("assets/ground.png")
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
 
     def draw(self, window):
         pygame.draw.rect(window, (255, 255, 255), self.rect)
+
+    def update(self, win_width):
+        self.rect.x -= constants.SCROLL_SPEED
+        if self.rect.x <= -win_width:
+            self.kill()
 
 class Pipes:
     width = 15
