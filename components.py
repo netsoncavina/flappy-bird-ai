@@ -1,5 +1,6 @@
 import pygame
 import random
+import constants
 class Ground:
     ground_level = 500
 
@@ -30,7 +31,7 @@ class Pipes:
         pygame.draw.rect(window, (255, 255, 255), self.top_rect)
 
     def update(self):
-        self.x -= 1
+        self.x -= constants.SCROLL_SPEED
         if self.x + Pipes.width <= 50:
             self.passed = True
         if self.x <= -self.width:
