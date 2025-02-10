@@ -3,12 +3,16 @@ import random
 import pygame
 import config
 
-
-class Player:
+class Player(pygame.sprite.Sprite):
+    bird_images = [pygame.image.load("assets/bird_down.png"), pygame.image.load("assets/bird_mid.png"), pygame.image.load("assets/bird_up.png")]
     def __init__(self):
         # Bird
+        pygame.sprite.Sprite.__init__(self)
+        self.image = Player.bird_images[0]
         self.x, self.y = 50, 200
-        self.rect = pygame.Rect(self.x, self.y, 20, 20)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
+        self.image_index = 0
         self.color = random.randint(100, 255), random.randint(100, 255), random.randint(100, 255)
         self.vel = 0
         self.flap = False
@@ -24,7 +28,8 @@ class Player:
         self.brain.generate_net()
 
     def draw(self, window):
-        pygame.draw.rect(window, self.color, self.rect)
+        window.blit(self.image, self.rect)
+
 
     def ground_collision(self, ground):
         return pygame.Rect.colliderect(self.rect, ground)
@@ -39,6 +44,14 @@ class Player:
 
     def update(self, ground):
         if not (self.ground_collision(ground) or self.pipe_collision()):
+            # Animation
+            self.image_index += 1
+            if self.image_index >= 30:
+                self.image_index = 0
+            self.image = Player.bird_images[self.image_index // 10]
+
+
+
             self.vel += 0.25
             self.rect.y += self.vel
 
