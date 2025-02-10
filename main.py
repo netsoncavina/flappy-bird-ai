@@ -9,9 +9,6 @@ clock = pygame.time.Clock()
 population = population.Population(100)
 
 # Images
-bird_images = [pygame.image.load("assets/bird_down.png"),
-               pygame.image.load("assets/bird_mid.png"),
-               pygame.image.load("assets/bird_up.png")]
 background_image = pygame.image.load("assets/background.png")
 
 top_pipe_image = pygame.image.load("assets/pipe_top.png")
