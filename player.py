@@ -71,6 +71,8 @@ class Player(pygame.sprite.Sprite):
             if self.vel > 5:
                 self.vel = 5
 
+            self.image = pygame.transform.rotate(self.image, -self.vel * 5)
+
             self.lifespan += 1
         else:
             self.alive = False
