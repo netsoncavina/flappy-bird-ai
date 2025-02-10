@@ -21,6 +21,9 @@ class Population:
                 player.think()
                 player.draw(config.window)
                 player.update(config.ground)
+        if self.players:
+            champion = max(self.players, key=operator.attrgetter('fitness'))
+            champion.draw_brain(config.window)
 
     def natural_selection(self):
         print('SPECIATE')
