@@ -19,27 +19,36 @@ class Ground(pygame.sprite.Sprite):
             self.kill()
 
 class Pipes:
-    width = 15
     opening = 100
+    top_pipe_image = pygame.image.load("assets/pipe_top.png")
+    bottom_pipe_image = pygame.image.load("assets/pipe_bottom.png")
+    width = top_pipe_image.get_width()
 
     def __init__(self, win_width):
         self.x = win_width
         self.bottom_height = random.randint(10, 300)
         self.top_height = Ground.ground_level - self.bottom_height - self.opening
-        self.bottom_rect, self.top_rect = pygame.Rect(0, 0, 0, 0), pygame.Rect(0, 0, 0, 0)
+
+        self.bottom_rect = self.bottom_pipe_image.get_rect(topleft=(self.x, Ground.ground_level - self.bottom_height))
+        self.top_rect = self.top_pipe_image.get_rect(bottomleft=(self.x, self.top_height))
+
         self.passed = False
         self.off_screen = False
 
     def draw(self, window):
-        self.bottom_rect = pygame.Rect(self.x, Ground.ground_level - self.bottom_height, self.width, self.bottom_height)
-        pygame.draw.rect(window, (255, 255, 255), self.bottom_rect)
+        self.bottom_rect.topleft = (self.x, Ground.ground_level - self.bottom_height)
+        self.top_rect.bottomleft = (self.x, self.top_height)
 
-        self.top_rect = pygame.Rect(self.x, 0, self.width, self.top_height)
-        pygame.draw.rect(window, (255, 255, 255), self.top_rect)
+        window.blit(self.bottom_pipe_image, self.bottom_rect.topleft)
+        window.blit(self.top_pipe_image, self.top_rect.topleft)
 
     def update(self):
         self.x -= constants.SCROLL_SPEED
-        if self.x + Pipes.width <= 50:
+
+        self.bottom_rect.x = self.x
+        self.top_rect.x = self.x
+
+        if self.x + self.width <= 50:
             self.passed = True
         if self.x <= -self.width:
             self.off_screen = True
