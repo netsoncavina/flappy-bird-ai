@@ -23,25 +23,19 @@ class Population:
                 player.update(config.ground)
         if self.players:
             champion = max(self.players, key=operator.attrgetter('fitness'))
-            champion.draw_brain(config.window)
+            # champion.draw_brain(config.window)
 
     def natural_selection(self):
-        print('SPECIATE')
         self.speciate()
 
-        print('CALCULATE FITNESS')
         self.calculate_fitness()
 
-        print('KILL EXTINCT')
         self.kill_extinct_species()
 
-        print('KILL STALE')
         self.kill_stale_species()
 
-        print('SORT BY FITNESS')
         self.sort_species_by_fitness()
 
-        print('CHILDREN FOR NEXT GEN')
         self.next_gen()
 
     def speciate(self):
