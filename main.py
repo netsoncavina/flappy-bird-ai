@@ -6,7 +6,7 @@ import population
 
 pygame.init()
 clock = pygame.time.Clock()
-population = population.Population()
+population = population.Population(100)
 
 def quit_game():
     for event in pygame.event.get():
@@ -37,7 +37,10 @@ def main():
             if pipe.off_screen:
                 config.pipes.remove(pipe)
 
-        population.update_live_players()
+        if not population.extinct():
+            population.update_live_players()
+        else:
+            pass
 
 
         clock.tick(60)
