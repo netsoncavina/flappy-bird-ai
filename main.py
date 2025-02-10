@@ -11,9 +11,6 @@ population = population.Population(100)
 # Images
 background_image = pygame.image.load("assets/background.png")
 
-top_pipe_image = pygame.image.load("assets/pipe_top.png")
-bottom_pipe_image = pygame.image.load("assets/pipe_bottom.png")
-
 def generate_pipes():
     config.pipes.append(components.Pipes(config.win_width))
 
@@ -39,7 +36,7 @@ def main():
         # Spawn Ground
         if len(ground) <= 2:
             ground.add(components.Ground(config.win_width))
-        ground.draw(config.window)
+
 
         # Spawn Pipes
         if pipes_spawn_time <= 0:
@@ -58,7 +55,7 @@ def main():
         else:
             config.pipes.clear()
             population.natural_selection()
-
+        ground.draw(config.window)
         ground.update(config.win_width)
         clock.tick(60)
         pygame.display.flip()
