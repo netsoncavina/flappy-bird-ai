@@ -13,7 +13,7 @@ bird_images = [pygame.image.load("assets/bird_down.png"),
                pygame.image.load("assets/bird_mid.png"),
                pygame.image.load("assets/bird_up.png")]
 background_image = pygame.image.load("assets/background.png")
-ground_image = pygame.image.load("assets/ground.png")
+
 top_pipe_image = pygame.image.load("assets/pipe_top.png")
 bottom_pipe_image = pygame.image.load("assets/pipe_bottom.png")
 
@@ -29,6 +29,9 @@ def quit_game():
 def main():
     pipes_spawn_time = 10
 
+    ground = pygame.sprite.Group()
+    ground.add(components.Ground())
+
     while True:
         quit_game()
 
@@ -37,7 +40,9 @@ def main():
         config.window.blit(background_image, (0, 0))
 
         # Spawn Ground
-        config.ground.draw(config.window)
+        if len(ground) <= 2:
+            ground.add(components.Ground(config.win_width))
+        ground.draw(config.window)
 
         # Spawn Pipes
         if pipes_spawn_time <= 0:
@@ -57,6 +62,7 @@ def main():
             config.pipes.clear()
             population.natural_selection()
 
+        ground.update(config.win_width)
         clock.tick(60)
         pygame.display.flip()
 
