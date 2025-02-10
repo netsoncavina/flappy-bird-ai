@@ -1,7 +1,8 @@
+import brain
 import random
 import pygame
 import config
-import brain
+
 
 class Player:
     def __init__(self):
@@ -22,11 +23,11 @@ class Player:
         self.brain = brain.Brain(self.inputs)
         self.brain.generate_net()
 
-
+    # Game related functions
     def draw(self, window):
         pygame.draw.rect(window, self.color, self.rect)
 
-    def ground_collision(self,ground):
+    def ground_collision(self, ground):
         return pygame.Rect.colliderect(self.rect, ground)
 
     def sky_collision(self):
@@ -34,7 +35,8 @@ class Player:
 
     def pipe_collision(self):
         for pipe in config.pipes:
-            return pygame.Rect.colliderect(self.rect, pipe.bottom_rect) or pygame.Rect.colliderect(self.rect, pipe.top_rect)
+            return pygame.Rect.colliderect(self.rect, pipe.top_rect) or \
+                   pygame.Rect.colliderect(self.rect, pipe.bottom_rect)
 
     def update(self, ground):
         if not (self.ground_collision(ground) or self.pipe_collision()):
@@ -43,6 +45,7 @@ class Player:
             self.rect.y += self.vel
             if self.vel > 5:
                 self.vel = 5
+            # Increment lifespan
             self.lifespan += 1
         else:
             self.alive = False
@@ -51,8 +54,8 @@ class Player:
 
     def bird_flap(self):
         if not self.flap and not self.sky_collision():
-            self.vel = -5
             self.flap = True
+            self.vel = -5
         if self.vel >= 3:
             self.flap = False
 
@@ -62,29 +65,29 @@ class Player:
             if not pipe.passed:
                 return pipe
 
+    # AI related functions
     def look(self):
         if config.pipes:
 
             # Line to top pipe
             self.vision[0] = max(0, self.rect.center[1] - self.closest_pipe().top_rect.bottom) / 500
-            pygame.draw.line(config.window, self.color, self.rect.center,(self.rect.center[0], config.pipes[0].top_rect.bottom))
+            pygame.draw.line(config.window, self.color, self.rect.center,
+                             (self.rect.center[0], config.pipes[0].top_rect.bottom))
 
             # Line to mid pipe
             self.vision[1] = max(0, self.closest_pipe().x - self.rect.center[0]) / 500
-            pygame.draw.line(config.window, self.color, self.rect.center,(config.pipes[0].x, self.rect.center[1]))
+            pygame.draw.line(config.window, self.color, self.rect.center,
+                             (config.pipes[0].x, self.rect.center[1]))
 
             # Line to bottom pipe
             self.vision[2] = max(0, self.closest_pipe().bottom_rect.top - self.rect.center[1]) / 500
-            pygame.draw.line(config.window, self.color, self.rect.center,(self.rect.center[0], config.pipes[0].bottom_rect.top))
-
-
+            pygame.draw.line(config.window, self.color, self.rect.center,
+                             (self.rect.center[0], config.pipes[0].bottom_rect.top))
 
     def think(self):
         self.decision = self.brain.feed_forward(self.vision)
         if self.decision > 0.73:
             self.bird_flap()
-        else:
-            pass
 
     def calculate_fitness(self):
         self.fitness = self.lifespan

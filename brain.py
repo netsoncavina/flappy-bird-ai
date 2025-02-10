@@ -11,23 +11,23 @@ class Brain:
         self.net = []
         self.layers = 2
 
-        # Create input nodes
         if not clone:
-            for i in range(inputs):
+            # Create input nodes
+            for i in range(0, self.inputs):
                 self.nodes.append(node.Node(i))
                 self.nodes[i].layer = 0
-
             # Create bias node
             self.nodes.append(node.Node(3))
             self.nodes[3].layer = 0
-
             # Create output node
             self.nodes.append(node.Node(4))
             self.nodes[4].layer = 1
 
             # Create connections
-            for i in range(0 , 4):
-                self.connections.append(connection.Connection(self.nodes[i], self.nodes[4], random.uniform(-1, 1)))
+            for i in range(0, 4):
+                self.connections.append(connection.Connection(self.nodes[i],
+                                                              self.nodes[4],
+                                                              random.uniform(-1, 1)))
 
     def connect_nodes(self):
         for i in range(0, len(self.nodes)):
@@ -53,9 +53,10 @@ class Brain:
         for i in range(0, len(self.net)):
             self.net[i].activate()
 
+        # Get output value from output node
         output_value = self.nodes[4].output_value
 
-        # Reset input values
+        # Reset node input values - only node 6 Missing Natural Selection in this case
         for i in range(0, len(self.nodes)):
             self.nodes[i].input_value = 0
 
@@ -64,21 +65,24 @@ class Brain:
     def clone(self):
         clone = Brain(self.inputs, True)
 
-        for node in self.nodes:
-            clone.nodes.append(node.clone())
+        # Clone all the nodes
+        for n in self.nodes:
+            clone.nodes.append(n.clone())
 
-        for connection in self.connections:
-            clone.connections.append(connection.clone(clone.getNode(connection.from_node.id). clone.getNode(connection.to_node.id)))
+        # Clone all connections
+        for c in self.connections:
+            clone.connections.append(c.clone(clone.getNode(c.from_node.id), clone.getNode(c.to_node.id)))
 
         clone.layers = self.layers
         clone.connect_nodes()
         return clone
 
     def getNode(self, id):
-        for node in self.nodes:
-            if node.id == id:
-                return node
+        for n in self.nodes:
+            if n.id == id:
+                return n
 
+    # 80 % chance that a connection undergoes mutation
     def mutate(self):
         if random.uniform(0, 1) < 0.8:
             for i in range(0, len(self.connections)):

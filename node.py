@@ -1,6 +1,5 @@
 import math
 
-
 class Node:
     def __init__(self, id_number):
         self.id = id_number
@@ -25,13 +24,3 @@ class Node:
         clone.id = self.id
         clone.layer = self.layer
         return clone
-
-
-
-
-
-
-
-
-
-

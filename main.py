@@ -8,13 +8,14 @@ pygame.init()
 clock = pygame.time.Clock()
 population = population.Population(100)
 
+def generate_pipes():
+    config.pipes.append(components.Pipes(config.win_width))
+
 def quit_game():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
-def generate_pipes():
-    config.pipes.append(components.Pipes(config.win_width))
 
 def main():
     pipes_spawn_time = 10
@@ -24,8 +25,10 @@ def main():
 
         config.window.fill((0, 0, 0))
 
+        # Spawn Ground
         config.ground.draw(config.window)
 
+        # Spawn Pipes
         if pipes_spawn_time <= 0:
             generate_pipes()
             pipes_spawn_time = 200
@@ -43,9 +46,7 @@ def main():
             config.pipes.clear()
             population.natural_selection()
 
-
         clock.tick(60)
         pygame.display.flip()
 
-if __name__ == '__main__':
-    main()
+main()

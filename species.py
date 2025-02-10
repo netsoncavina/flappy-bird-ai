@@ -40,8 +40,8 @@ class Species:
 
     def calculate_average_fitness(self):
         total_fitness = 0
-        for p in self.players:
-            total_fitness += p.fitness
+        for player in self.players:
+            total_fitness += player.fitness
         if self.players:
             self.average_fitness = int(total_fitness / len(self.players))
         else:
@@ -51,13 +51,3 @@ class Species:
         baby = self.players[random.randint(1, len(self.players)) - 1].clone()
         baby.brain.mutate()
         return baby
-
-
-
-
-
-
-
-
-
-

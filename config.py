@@ -1,6 +1,5 @@
-import pygame
 import components
-
+import pygame
 
 win_height = 720
 win_width = 550
