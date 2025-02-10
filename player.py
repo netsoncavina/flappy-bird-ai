@@ -130,7 +130,7 @@ class Player(pygame.sprite.Sprite):
         input_labels = ["Top Pipe", "Gap", "Bot Pipe", "Bias"]
         output_labels = ["Should Jump?"]
 
-        ground_y = config.ground.y + 50
+        ground_y = config.ground.rect.y + 50
         screen_width = config.window.get_width()
         input_x = screen_width // 2 - 100
         output_x = screen_width // 2 + 100
