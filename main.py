@@ -34,6 +34,8 @@ def main():
 
         config.window.fill((0, 0, 0))
 
+        config.window.blit(background_image, (0, 0))
+
         # Spawn Ground
         config.ground.draw(config.window)
 
