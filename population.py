@@ -3,6 +3,8 @@ import player
 import math
 import species
 import operator
+import pandas as pd
+from datetime import datetime
 
 
 class Population:
@@ -11,6 +13,8 @@ class Population:
         self.generation = 1
         self.species = []
         self.size = size
+        self.best_players = []
+
         for _ in range(0, self.size):
             self.players.append(player.Player())
 
@@ -36,7 +40,18 @@ class Population:
 
         self.sort_species_by_fitness()
 
+        self.save_best_player()
+
         self.next_gen()
+
+    def save_best_player(self):
+        if not self.players:
+            return
+
+        champion = max(self.players, key=operator.attrgetter('fitness'))
+        self.best_players.append({'Generation': self.generation, 'Champion Fitness': champion.fitness})
+
+        print(f'Generation: {self.generation} | Champion Fitness: {champion.fitness} (saved in memory)')
 
     def speciate(self):
         for specie in self.species:
@@ -116,3 +131,14 @@ class Population:
             if player.alive:
                 extinct = False
         return extinct
+
+    def save_excel(self):
+        now = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_path = f'fitness_tracker/best_players_{now}.xlsx'
+
+        if self.best_players:
+            df = pd.DataFrame(self.best_players)
+            df.to_excel(file_path, index=False)
+            print(f"Results saved to {file_path}")
+        else:
+            print("No results to save.")

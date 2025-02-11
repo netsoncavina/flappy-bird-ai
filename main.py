@@ -17,6 +17,7 @@ def generate_pipes():
 def quit_game():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            population.save_excel()
             pygame.quit()
             exit()
 
