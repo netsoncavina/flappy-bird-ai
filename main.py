@@ -50,13 +50,14 @@ def main():
             if pipe.off_screen:
                 config.pipes.remove(pipe)
 
+        ground.draw(config.window)
+        ground.update(config.win_width)
+
         if not population.extinct():
             population.update_live_players()
         else:
             config.pipes.clear()
             population.natural_selection()
-        ground.draw(config.window)
-        ground.update(config.win_width)
         clock.tick(60)
         pygame.display.flip()
 
