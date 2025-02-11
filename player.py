@@ -3,13 +3,22 @@ import random
 import pygame
 import config
 
-
-class Player:
+class Player(pygame.sprite.Sprite):
+    colors = ["blue", "red", "yellow"]
+    rgb_colors = [(0, 0, 255), (255, 0, 0), (255, 255, 0)]
+    blue_bird_images = [pygame.image.load("assets/bluebird-downflap.png"), pygame.image.load("assets/bluebird-midflap.png"), pygame.image.load("assets/bluebird-upflap.png")]
+    red_bird_images = [pygame.image.load("assets/redbird-downflap.png"), pygame.image.load("assets/redbird-midflap.png"), pygame.image.load("assets/redbird-upflap.png")]
+    yellow_bird_images = [pygame.image.load("assets/yellowbird-downflap.png"), pygame.image.load("assets/yellowbird-midflap.png"), pygame.image.load("assets/yellowbird-upflap.png")]
     def __init__(self):
         # Bird
+        pygame.sprite.Sprite.__init__(self)
+        self.chosen_color = random.choice(Player.colors)
+        self.image = self.select_sprite()[0]
         self.x, self.y = 50, 200
-        self.rect = pygame.Rect(self.x, self.y, 20, 20)
-        self.color = random.randint(100, 255), random.randint(100, 255), random.randint(100, 255)
+        self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
+        self.image_index = 0
+        self.color = Player.rgb_colors[Player.colors.index(self.chosen_color)]
         self.vel = 0
         self.flap = False
         self.alive = True
@@ -23,8 +32,17 @@ class Player:
         self.brain = brain.Brain(self.inputs)
         self.brain.generate_net()
 
+    def select_sprite(self):
+        if self.chosen_color == "blue":
+            return Player.blue_bird_images
+        elif self.chosen_color == "red":
+            return Player.red_bird_images
+        elif self.chosen_color == "yellow":
+            return Player.yellow_bird_images
+
     def draw(self, window):
-        pygame.draw.rect(window, self.color, self.rect)
+        window.blit(self.image, self.rect)
+
 
     def ground_collision(self, ground):
         return pygame.Rect.colliderect(self.rect, ground)
@@ -39,11 +57,21 @@ class Player:
 
     def update(self, ground):
         if not (self.ground_collision(ground) or self.pipe_collision()):
+            # Animation
+            self.image_index += 1
+            if self.image_index >= 30:
+                self.image_index = 0
+            self.image = Player.select_sprite(self)[self.image_index // 10]
+
+
+
             self.vel += 0.25
             self.rect.y += self.vel
 
             if self.vel > 5:
                 self.vel = 5
+
+            self.image = pygame.transform.rotate(self.image, -self.vel * 5)
 
             self.lifespan += 1
         else:
@@ -102,31 +130,31 @@ class Player:
         input_labels = ["Top Pipe", "Gap", "Bot Pipe", "Bias"]
         output_labels = ["Should Jump?"]
 
-        ground_y = config.ground.y + 50
+        ground_y = config.ground.rect.y
         screen_width = config.window.get_width()
         input_x = screen_width // 2 - 100
         output_x = screen_width // 2 + 100
-        input_y_start = ground_y
-        output_y = ground_y + 70
+        input_y_start = ground_y + 240
+        output_y = input_y_start + 70
 
-        # Draw input nodes and labels
+        background_rect = pygame.Rect(0, input_y_start - 20, screen_width, 300)
+        pygame.draw.rect(window, (0, 0, 0), background_rect)
+
         for i, label in enumerate(input_labels):
-            y = input_y_start + i * 70  # Increased gap between circles
+            y = input_y_start + i * 70
             pygame.draw.circle(window, (255, 255, 255), (input_x, y), 10)
             font = pygame.font.SysFont(None, 24)
             text = font.render(label, True, (255, 255, 255))
-            window.blit(text, (input_x - 100, y - 10))  # Moved labels more to the left
+            window.blit(text, (input_x - 100, y - 10))
 
-        # Draw output node and label
         pygame.draw.circle(window, (255, 255, 255), (output_x, output_y), 10)
         font = pygame.font.SysFont(None, 24)
         text = font.render(output_labels[0], True, (255, 255, 255))
         window.blit(text, (output_x + 20, output_y - 10))
 
-        # Draw connections
         for connection in self.brain.connections:
             from_node = connection.from_node
             to_node = connection.to_node
             color = (0, 255, 0) if connection.weight > 0 else (255, 0, 0)
-            from_y = input_y_start + from_node.id * 70  # Increased gap between circles
+            from_y = input_y_start + from_node.id * 70
             pygame.draw.line(window, color, (input_x, from_y), (output_x, output_y), 2)
