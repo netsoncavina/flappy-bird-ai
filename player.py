@@ -130,31 +130,31 @@ class Player(pygame.sprite.Sprite):
         input_labels = ["Top Pipe", "Gap", "Bot Pipe", "Bias"]
         output_labels = ["Should Jump?"]
 
-        ground_y = config.ground.rect.y + 50
+        ground_y = config.ground.rect.y
         screen_width = config.window.get_width()
         input_x = screen_width // 2 - 100
         output_x = screen_width // 2 + 100
-        input_y_start = ground_y
-        output_y = ground_y + 70
+        input_y_start = ground_y + 240
+        output_y = input_y_start + 70
 
-        # Draw input nodes and labels
+        background_rect = pygame.Rect(0, input_y_start - 20, screen_width, 300)
+        pygame.draw.rect(window, (0, 0, 0), background_rect)
+
         for i, label in enumerate(input_labels):
-            y = input_y_start + i * 70  # Increased gap between circles
+            y = input_y_start + i * 70
             pygame.draw.circle(window, (255, 255, 255), (input_x, y), 10)
             font = pygame.font.SysFont(None, 24)
             text = font.render(label, True, (255, 255, 255))
-            window.blit(text, (input_x - 100, y - 10))  # Moved labels more to the left
+            window.blit(text, (input_x - 100, y - 10))
 
-        # Draw output node and label
         pygame.draw.circle(window, (255, 255, 255), (output_x, output_y), 10)
         font = pygame.font.SysFont(None, 24)
         text = font.render(output_labels[0], True, (255, 255, 255))
         window.blit(text, (output_x + 20, output_y - 10))
 
-        # Draw connections
         for connection in self.brain.connections:
             from_node = connection.from_node
             to_node = connection.to_node
             color = (0, 255, 0) if connection.weight > 0 else (255, 0, 0)
-            from_y = input_y_start + from_node.id * 70  # Increased gap between circles
+            from_y = input_y_start + from_node.id * 70
             pygame.draw.line(window, color, (input_x, from_y), (output_x, output_y), 2)
