@@ -21,7 +21,7 @@ def quit_game():
             exit()
 
 def main():
-    pipes_spawn_time = 10
+    pipes_spawn_time = 0
 
     ground = pygame.sprite.Group()
     ground.add(components.Ground())
@@ -41,7 +41,7 @@ def main():
         # Spawn Pipes
         if pipes_spawn_time <= 0:
             generate_pipes()
-            pipes_spawn_time = 200
+            pipes_spawn_time = 250
         pipes_spawn_time -= 1
 
         for pipe in config.pipes:
