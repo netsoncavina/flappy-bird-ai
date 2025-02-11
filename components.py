@@ -63,8 +63,9 @@ class Pipes:
         window.blit(self.bottom_pipe_image, self.bottom_rect.topleft)
         window.blit(self.top_pipe_image, self.top_rect.topleft)
 
-        pygame.draw.rect(window, (255, 0, 0), self.bottom_hitbox, 2)
-        pygame.draw.rect(window, (255, 0, 0), self.top_hitbox, 2)
+        # debug hitboxes
+        # pygame.draw.rect(window, (255, 0, 0), self.bottom_hitbox, 2)
+        # pygame.draw.rect(window, (255, 0, 0), self.top_hitbox, 2)
 
     def update(self):
         self.x -= constants.SCROLL_SPEED
