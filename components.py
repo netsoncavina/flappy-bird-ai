@@ -18,11 +18,18 @@ class Ground(pygame.sprite.Sprite):
         if self.rect.x <= -win_width:
             self.kill()
 
+import pygame
+import random
+import constants
+
 class Pipes:
-    opening = 100
+    opening = 125
     top_pipe_image = pygame.image.load("assets/pipe_top.png")
     bottom_pipe_image = pygame.image.load("assets/pipe_bottom.png")
     width = top_pipe_image.get_width()
+
+    hitbox_padding_x = 10
+    hitbox_padding_y = 10
 
     def __init__(self, win_width):
         self.x = win_width
@@ -31,6 +38,20 @@ class Pipes:
 
         self.bottom_rect = self.bottom_pipe_image.get_rect(topleft=(self.x, Ground.ground_level - self.bottom_height))
         self.top_rect = self.top_pipe_image.get_rect(bottomleft=(self.x, self.top_height))
+
+        self.bottom_hitbox = pygame.Rect(
+            self.bottom_rect.x + self.hitbox_padding_x,
+            self.bottom_rect.y + self.hitbox_padding_y,
+            self.bottom_rect.width - (2 * self.hitbox_padding_x),
+            self.bottom_rect.height - (2 * self.hitbox_padding_y)
+        )
+
+        self.top_hitbox = pygame.Rect(
+            self.top_rect.x + self.hitbox_padding_x,
+            self.top_rect.y + self.hitbox_padding_y,
+            self.top_rect.width - (2 * self.hitbox_padding_x),
+            self.top_rect.height - (2 * self.hitbox_padding_y)
+        )
 
         self.passed = False
         self.off_screen = False
@@ -42,11 +63,19 @@ class Pipes:
         window.blit(self.bottom_pipe_image, self.bottom_rect.topleft)
         window.blit(self.top_pipe_image, self.top_rect.topleft)
 
+        pygame.draw.rect(window, (255, 0, 0), self.bottom_hitbox, 2)
+        pygame.draw.rect(window, (255, 0, 0), self.top_hitbox, 2)
+
     def update(self):
         self.x -= constants.SCROLL_SPEED
 
         self.bottom_rect.x = self.x
         self.top_rect.x = self.x
+
+        self.bottom_hitbox.x = self.bottom_rect.x + self.hitbox_padding_x
+        self.bottom_hitbox.y = self.bottom_rect.y + self.hitbox_padding_y
+        self.top_hitbox.x = self.top_rect.x + self.hitbox_padding_x
+        self.top_hitbox.y = self.top_rect.y + self.hitbox_padding_y
 
         if self.x + self.width <= 50:
             self.passed = True
