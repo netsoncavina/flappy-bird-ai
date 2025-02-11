@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+fitness_tracker/*.xlsx
+
 # C extensions
 *.so
 
