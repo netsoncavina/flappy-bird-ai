@@ -63,8 +63,6 @@ class Player(pygame.sprite.Sprite):
                 self.image_index = 0
             self.image = Player.select_sprite(self)[self.image_index // 10]
 
-
-
             self.vel += 0.25
             self.rect.y += self.vel
 
@@ -82,7 +80,7 @@ class Player(pygame.sprite.Sprite):
     def bird_flap(self):
         if not self.flap and not self.sky_collision():
             self.flap = True
-            self.vel = -5
+            self.vel = -5.5
         if self.vel >= 3:
             self.flap = False
 
