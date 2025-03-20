@@ -10,6 +10,11 @@ class Player(pygame.sprite.Sprite):
     red_bird_images = [pygame.image.load("assets/redbird-downflap.png"), pygame.image.load("assets/redbird-midflap.png"), pygame.image.load("assets/redbird-upflap.png")]
     yellow_bird_images = [pygame.image.load("assets/yellowbird-downflap.png"), pygame.image.load("assets/yellowbird-midflap.png"), pygame.image.load("assets/yellowbird-upflap.png")]
     def __init__(self):
+        """
+        Inicializa um novo jogador (pássaro) com uma rede neural.
+        Se um cérebro (brain) for passado, ele será utilizado; caso contrário, um novo será criado.
+        """
+
         # Bird
         pygame.sprite.Sprite.__init__(self)
         self.chosen_color = random.choice(Player.colors)
@@ -90,34 +95,39 @@ class Player(pygame.sprite.Sprite):
             if not pipe.passed:
                 return pipe
 
-    # AI related functions
+    # Funções relacionadas a IA
     def look(self):
         if config.pipes:
 
-            # Line to top pipe
+            # Distacia entre o pássaro e o cano de cima
             self.vision[0] = max(0, self.rect.center[1] - self.closest_pipe().top_rect.bottom) / 500
             pygame.draw.line(config.window, self.color, self.rect.center,
                              (self.rect.center[0], config.pipes[0].top_rect.bottom))
 
-            # Line to mid pipe
+            # Distancia entre o pássaro e o cano
             self.vision[1] = max(0, self.closest_pipe().x - self.rect.center[0]) / 500
             pygame.draw.line(config.window, self.color, self.rect.center,
                              (config.pipes[0].x, self.rect.center[1]))
 
-            # Line to bottom pipe
+            # Distancia entre o pássaro e o cano de baixo
             self.vision[2] = max(0, self.closest_pipe().bottom_rect.top - self.rect.center[1]) / 500
             pygame.draw.line(config.window, self.color, self.rect.center,
                              (self.rect.center[0], config.pipes[0].bottom_rect.top))
 
     def think(self):
+        """
+        O pássaro decide se deve pular baseado na saída da rede neural.
+        """
         self.decision = self.brain.feed_forward(self.vision)
         if self.decision > 0.73:
             self.bird_flap()
 
     def calculate_fitness(self):
+        """ Calcula a pontuação do jogador baseada no tempo de vida. """
         self.fitness = self.lifespan
 
     def clone(self):
+        """ Cria uma cópia do jogador com a mesma rede neural. """
         clone = Player()
         clone.fitness = self.fitness
         clone.brain = self.brain.clone()

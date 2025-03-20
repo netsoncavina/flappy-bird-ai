@@ -53,6 +53,7 @@ class Population:
 
         print(f'Generation: {self.generation} | Champion Fitness: {champion.fitness} (saved in memory)')
 
+    # Separa os jogadores em espécies
     def speciate(self):
         for specie in self.species:
             specie.players = []
@@ -73,6 +74,7 @@ class Population:
         for species in self.species:
             species.calculate_average_fitness()
 
+    # Exclui espécies sem jogadores
     def kill_extinct_species(self):
         species_bin = []
         for specie in self.species:
@@ -81,6 +83,7 @@ class Population:
         for specie in species_bin:
             self.species.remove(specie)
 
+    # Exclui espécies com jogadores estagnados
     def kill_stale_species(self):
         player_bin = []
         species_bin = []
@@ -106,11 +109,11 @@ class Population:
     def next_gen(self):
         children = []
 
-        # Clone of champion is added to each species
+        # Clone dos campeões de cada espécie
         for specie in self.species:
             children.append(specie.champion.clone())
 
-        # Fill open player slots with children
+        # Preenche os slots de jogadores vazios com filhos
         children_per_species = math.floor((self.size - len(self.species)) / len(self.species))
         for specie in self.species:
             for _ in range(0, children_per_species):
@@ -124,7 +127,7 @@ class Population:
             self.players.append(child)
         self.generation += 1
 
-    # Return true if all players are dead
+    # Return true se todos os jogadores estiverem mortos
     def extinct(self):
         extinct = True
         for player in self.players:
