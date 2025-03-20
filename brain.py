@@ -88,7 +88,7 @@ class Brain:
             if n.id == id:
                 return n
 
-    # 80 % de chance de mutar o peso de uma conexão
+    # 50 % de chance de mutar o peso de uma conexão
     def mutate(self):
         if random.uniform(0, 1) < 0.5:
             for i in range(0, len(self.connections)):
